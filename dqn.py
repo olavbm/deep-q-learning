@@ -44,12 +44,12 @@ class DQNAgent:
     def train_from_replay_memory(self, batch_size):
         minibatch = random.sample(self.memory, batch_size)
         for state, action, reward, next_state, done in minibatch:
-            target = reward
+            td_target = reward
             if not done:
-                target = (reward + self.gamma *
+                td_target = (reward + self.gamma *
                           np.amax(self.model.predict(next_state)[0]))
             target_f = self.model.predict(state)
-            target_f[0][action] = target
+            target_f[0][action] = td_target
             self.model.fit(state, target_f, epochs=1, verbose=0)
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         state = env.reset()
         state = np.reshape(state, [1, state_size])
 
-        if (e % 10) == 0:
+        if (e % 20) == 0:
             render(agent)
 
         for time in range(500):
