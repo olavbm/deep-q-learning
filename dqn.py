@@ -31,8 +31,8 @@ class DQNAgent:
                       optimizer=Adam(lr=self.learning_rate))
         return model
 
-    def remember(self, state, action, reward, next_state, done):
-        self.memory.append((state, action, reward, next_state, done))
+    def add_to_replay_memory(self, sarsd_tuple):
+        self.memory.append(sarsd_tuple)
 
     def act(self, state):
         if np.random.rand() <= self.epsilon:
@@ -75,9 +75,7 @@ def render(agent):
         next_state = np.reshape(next_state, [1, state_size])
         state = next_state
         if done:
-            #env.close()
             return
-    #env.close()
     return
 
 if __name__ == "__main__":
@@ -88,18 +86,20 @@ if __name__ == "__main__":
     done = False
     batch_size = 32
 
+    # Main training loop
     for e in range(EPISODES):
         state = env.reset()
         state = np.reshape(state, [1, state_size])
 
         if (e % 10) == 0:
             render(agent)
+
         for time in range(500):
             action = agent.act(state)
             next_state, reward, done, _ = env.step(action)
             reward = reward if not done else -10
             next_state = np.reshape(next_state, [1, state_size])
-            agent.remember(state, action, reward, next_state, done)
+            agent.add_to_replay_memory((state, action, reward, next_state, done))
             state = next_state
 
             if done:
