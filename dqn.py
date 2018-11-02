@@ -43,16 +43,23 @@ class DQNAgent:
 
     def train_from_replay_memory(self, batch_size):
         minibatch = random.sample(self.memory, batch_size)
+        states, targets_f = [], []
         for state, action, reward, next_state, done in minibatch:
-            td_target = reward
+            target = reward
             if not done:
-                td_target = (reward + self.gamma *
+                target = (reward + self.gamma *
                           np.amax(self.model.predict(next_state)[0]))
             target_f = self.model.predict(state)
-            target_f[0][action] = td_target
-            self.model.fit(state, target_f, epochs=1, verbose=0)
+            target_f[0][action] = target 
+            # Filtering out states and targets for training
+            states.append(state[0])
+            targets_f.append(target_f[0])
+        history = self.model.fit(np.array(states), np.array(targets_f), epochs=1, verbose=0)
+        # Keeping track of loss
+        loss = history.history['loss'][0]
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
+        return loss
 
 if __name__ == "__main__":
     env = gym.make('CartPole-v1')
@@ -79,7 +86,7 @@ if __name__ == "__main__":
             state = next_state
 
             if done:
-                print("episode: {}/{}, score: {}, e: {:.2}"
+                print("episode: {:4}/{}, score: {:4}, e: {:.2}"
                       .format(e, EPISODES, time, agent.epsilon))
                 break
 
