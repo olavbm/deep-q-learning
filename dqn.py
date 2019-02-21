@@ -8,27 +8,33 @@ from keras.layers import Dense
 from keras.optimizers import Adam
 from config import train_config
 from config import nn_config
+from config import memory_config
 from models import Cartpole_nn
 from config import Config
+from memory import Ring_Buffer
 
 
 class Agent:
     def __init__(self, state_size, action_size):
         self.state_size = state_size
         self.action_size = action_size
-        self.memory = deque(maxlen=2000)
         self.gamma = 0.95  # discount rate
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01
         self.epsilon_decay = 0.995
         self.learning_rate = 0.001
         self.model = self.build_model()
+        self.memory = self.build_memory()
 
     def build_model(self):
         model = Cartpole_nn(
             nn_config + Config(state_size=self.state_size, action_size=self.action_size)
         )
         return model
+
+    def build_memory(self):
+        memory = Ring_Buffer(memory_config)
+        return memory
 
     def add_to_replay_memory(self, sarsd_tuple):
         self.memory.append(sarsd_tuple)
@@ -39,8 +45,8 @@ class Agent:
         act_values = self.model.predict(state)
         return np.argmax(act_values[0])  # returns action
 
-    def train_from_replay_memory(self, batch_size):
-        minibatch = random.sample(self.memory, batch_size)
+    def train_from_replay_memory(self):
+        minibatch = self.memory.sample()
         states, targets_f = [], []
         for state, action, reward, next_state, done in minibatch:
             target = reward

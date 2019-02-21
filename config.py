@@ -18,3 +18,4 @@ class Config(dict):
 
 train_config = Config(episodes=100, time_limit=500)
 nn_config = Config(loss="mse", optimizer=Adam(lr=0.001))
+memory_config = Config(batch_size=32, size=1000)

@@ -3,7 +3,6 @@ from util import render
 
 
 def train(env, agent, config):
-    batch_size = 32
     state_size = env.observation_space.shape[0]
     for e in range(config.episodes):
         state = env.reset()
@@ -27,6 +26,4 @@ def train(env, agent, config):
                     )
                 )
                 break
-
-            if len(agent.memory) > batch_size:
-                agent.train_from_replay_memory(batch_size)
+            agent.train_from_replay_memory()
