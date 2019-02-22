@@ -9,9 +9,11 @@ from keras.optimizers import Adam
 from config import train_config
 from config import nn_config
 from config import memory_config
+from config import policy_config
 from models import Cartpole_nn
 from config import Config
 from memory import Ring_Buffer
+from policy import E_greedy
 
 
 class Agent:
@@ -25,6 +27,7 @@ class Agent:
         self.learning_rate = 0.001
         self.model = self.build_model()
         self.memory = self.build_memory()
+        self.policy = self.build_policy()
 
     def build_model(self):
         model = Cartpole_nn(
@@ -36,14 +39,17 @@ class Agent:
         memory = Ring_Buffer(memory_config)
         return memory
 
+    def build_policy(self):
+        policy = E_greedy(policy_config + self.state_config)
+        return policy
+
     def add_to_replay_memory(self, sarsd_tuple):
         self.memory.append(sarsd_tuple)
 
     def act(self, state):
-        if np.random.rand() <= self.epsilon:
-            return random.randrange(self.action_size)
-        act_values = self.model.predict(state)
-        return np.argmax(act_values[0])  # returns action
+        action_values = self.model.predict(state)
+        action = self.policy.pick_action(action_values)
+        return action
 
     def train_from_replay_memory(self):
         minibatch = self.memory.sample()
@@ -62,8 +68,7 @@ class Agent:
         history = self.model.train(states, targets_f)
         # Keeping track of loss
         loss = history.history["loss"][0]
-        if self.epsilon > self.epsilon_min:
-            self.epsilon *= self.epsilon_decay
+        self.policy.decay_temperature()
         return loss
 
 
