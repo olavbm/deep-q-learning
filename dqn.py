@@ -20,6 +20,7 @@ class Agent:
     def __init__(self, state_size, action_size):
         self.state_size = state_size
         self.action_size = action_size
+        self.state_config = Config(state_size=state_size, action_size=action_size)
         self.gamma = 0.95  # discount rate
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01
@@ -30,9 +31,7 @@ class Agent:
         self.policy = self.build_policy()
 
     def build_model(self):
-        model = Cartpole_nn(
-            nn_config + Config(state_size=self.state_size, action_size=self.action_size)
-        )
+        model = Cartpole_nn(nn_config + self.state_config)
         return model
 
     def build_memory(self):
