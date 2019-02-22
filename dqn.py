@@ -22,10 +22,6 @@ class Agent:
         self.action_size = action_size
         self.state_config = Config(state_size=state_size, action_size=action_size)
         self.gamma = 0.95  # discount rate
-        self.epsilon = 1.0  # exploration rate
-        self.epsilon_min = 0.01
-        self.epsilon_decay = 0.995
-        self.learning_rate = 0.001
         self.model = self.build_model()
         self.memory = self.build_memory()
         self.policy = self.build_policy()
