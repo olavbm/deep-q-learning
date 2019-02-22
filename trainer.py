@@ -22,7 +22,7 @@ def train(env, agent, config):
             if done:
                 print(
                     "episode: {:4}/{}, score: {:4}, e: {:.2}".format(
-                        e, config.episodes, time, agent.epsilon
+                        e, config.episodes, time, agent.policy.e
                     )
                 )
                 break
