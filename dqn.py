@@ -9,11 +9,12 @@ from keras.optimizers import Adam
 from config import train_config
 from config import nn_config
 from config import memory_config
-from config import policy_config
+from config import policy_config, update_config
 from models import Cartpole_nn
 from config import Config
 from memory import Ring_Buffer
 from policy import E_greedy
+from updates import Q_learning
 
 
 class Agent:
@@ -25,6 +26,7 @@ class Agent:
         self.model = self.build_model()
         self.memory = self.build_memory()
         self.policy = self.build_policy()
+        self.update = self.build_updates()
 
     def build_model(self):
         model = Cartpole_nn(nn_config + self.state_config)
@@ -38,6 +40,10 @@ class Agent:
         policy = E_greedy(policy_config + self.state_config)
         return policy
 
+    def build_updates(self):
+        update_rule = Q_learning(update_config)
+        return update_rule
+
     def add_to_replay_memory(self, sarsd_tuple):
         self.memory.append(sarsd_tuple)
 
@@ -48,19 +54,8 @@ class Agent:
 
     def train_from_replay_memory(self):
         minibatch = self.memory.sample()
-        states, targets_f = [], []
-        for state, action, reward, next_state, done in minibatch:
-            target = reward
-            if not done:
-                target = reward + self.gamma * np.amax(
-                    self.model.predict(next_state)[0]
-                )
-            target_f = self.model.predict(state)
-            target_f[0][action] = target
-            # Filtering out states and targets for training
-            states.append(state[0])
-            targets_f.append(target_f[0])
-        history = self.model.train(states, targets_f)
+        history = self.update(self.model, minibatch)
+
         # Keeping track of loss
         loss = history.history["loss"][0]
         self.policy.decay_temperature()
