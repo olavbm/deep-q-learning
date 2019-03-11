@@ -89,3 +89,14 @@ ENV/
 .ropeproject
 
 .vscode/
+
+# latex
+*.gz
+*.nav
+*.aux
+*.pdf
+*.toc
+*.snm
+*.out
+slides/auto
+slides/_minted-main/
