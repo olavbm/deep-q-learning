@@ -5,12 +5,7 @@ import numpy as np
 
 def render(current_agent):
     while True:
-        # print(current_agent)
-        # print(current_agent.value)
-        # print(current_agent.get())
-        # agent = current_agent.get()
         agent = current_agent
-        # print(agent, "agent")
         env = gym.make("Pendulum-v0")
         state_size = env.observation_space.shape[0]
         action_size = 1
