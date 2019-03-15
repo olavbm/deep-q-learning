@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import copy
 import random
 import gym
 import numpy as np
@@ -15,6 +16,9 @@ from config import Config
 from memory import Ring_Buffer
 from policy import E_greedy
 from updates import Q_learning
+from shared import Shared
+from multiprocessing import Process
+from util import render
 
 
 class Agent:
