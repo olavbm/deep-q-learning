@@ -19,6 +19,7 @@ def train(env, agent, config):
             next_state = np.reshape(next_state, [1, state_size])
             agent.add_to_replay_memory((state, action, reward, next_state, done))
             state = next_state
+            env.render()
 
             accumulated_reward += reward
             if done:
