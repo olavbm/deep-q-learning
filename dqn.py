@@ -62,13 +62,16 @@ class Agent:
         return loss
 
 
-if __name__ == "__main__":
+def main():
+    import trainer
+
     env = gym.make("CartPole-v1")
     env._max_episode_steps = train_config.time_limit
     state_size = env.observation_space.shape[0]
     action_size = env.action_space.n
     agent = Agent(state_size, action_size)
-
-    import trainer
-
     trainer.train(env, agent, train_config)
+
+
+if __name__ == "__main__":
+    main()
