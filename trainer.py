@@ -15,7 +15,7 @@ def train(env, agent, config):
         for time in range(config.time_limit):
             action = agent.act(state)
             next_state, reward, done, _ = env.step(action)
-            reward = reward if not done else -10
+            reward = reward if not done else -reward
             next_state = np.reshape(next_state, [1, state_size])
             agent.add_to_replay_memory((state, action, reward, next_state, done))
             state = next_state
