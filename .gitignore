@@ -97,6 +97,8 @@ ENV/
 *.pdf
 *.toc
 *.snm
+*.fls
 *.out
+*.fdb_latexmk
 slides/auto
 slides/_minted-main/
