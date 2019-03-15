@@ -8,9 +8,6 @@ def train(env, agent, config):
         state = env.reset()
         state = np.reshape(state, [1, state_size])
 
-        if (e % 20) == 0:
-            render(agent)
-
         accumulated_reward = 0
         for time in range(config.time_limit):
             action = agent.act(state)
