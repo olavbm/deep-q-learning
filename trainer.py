@@ -11,6 +11,7 @@ def train(env, agent, config):
         if (e % 20) == 0:
             render(agent)
 
+        accumulated_reward = 0
         for time in range(config.time_limit):
             action = agent.act(state)
             next_state, reward, done, _ = env.step(action)
@@ -19,10 +20,11 @@ def train(env, agent, config):
             agent.add_to_replay_memory((state, action, reward, next_state, done))
             state = next_state
 
+            accumulated_reward += reward
             if done:
                 print(
                     "episode: {:4}/{}, score: {:4}, e: {:.2}".format(
-                        e, config.episodes, time, agent.policy.e
+                        e, config.episodes, accumulated_reward, agent.policy.e
                     )
                 )
                 break
