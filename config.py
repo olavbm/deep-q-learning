@@ -16,8 +16,8 @@ class Config(dict):
         return Config(**{**self, **other})
 
 
-train_config = Config(episodes=100, time_limit=500)
+train_config = Config(episodes=200, time_limit=500)
 nn_config = Config(loss="mse", optimizer=Adam(lr=0.001))
-memory_config = Config(batch_size=32, size=1000)
-policy_config = Config(e=0.2, e_decay=0.995, e_min=0.0001)
+memory_config = Config(batch_size=128, size=10000)
+policy_config = Config(e=0.4, e_decay=0.99, e_min=0.000001)
 update_config = Config(gamma=0.999)
