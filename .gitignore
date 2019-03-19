@@ -102,3 +102,6 @@ ENV/
 *.fdb_latexmk
 slides/auto
 slides/_minted-main/
+
+# Jetbrains/IntelliJ config
+.idea

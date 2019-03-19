@@ -3,10 +3,10 @@ import numpy as np
 
 
 class Policy:
-    def pick_action(action_values):
+    def pick_action(self, action_values):
         raise NotImplementedError
 
-    def decay_temperature():
+    def decay_temperature(self):
         return NotImplementedError
 
 
