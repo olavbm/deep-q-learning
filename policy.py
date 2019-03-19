@@ -25,3 +25,17 @@ class E_greedy(Policy):
     def decay_temperature(self):
         if self.e > self.e_min:
             self.e *= self.e_decay
+
+
+class Random(Policy):
+    def __init__(self, config):
+        self.e = config.e
+        self.e_decay = config.e_decay
+        self.e_min = config.e_min
+        self.action_size = config.action_size
+
+    def pick_action(self, action_values):
+        return random.randrange(self.action_size)
+
+    def decay_temperature(self):
+        pass

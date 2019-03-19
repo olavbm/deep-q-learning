@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
-import copy
-import random
 import gym
-import numpy as np
-from collections import deque
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import Adam
 from config import train_config
 from config import nn_config
 from config import memory_config
@@ -15,10 +8,8 @@ from models import Cartpole_nn
 from config import Config
 from memory import Ring_Buffer
 from policy import E_greedy
+from policy import Random
 from updates import Q_learning
-from shared import Shared
-from multiprocessing import Process
-from util import render
 
 
 class Agent:
@@ -41,7 +32,7 @@ class Agent:
         return memory
 
     def build_policy(self):
-        policy = E_greedy(policy_config + self.state_config)
+        policy = Random(policy_config + self.state_config)
         return policy
 
     def build_updates(self):
